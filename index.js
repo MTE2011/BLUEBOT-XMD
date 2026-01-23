@@ -58,9 +58,14 @@ async function startBot() {
             console.log("\n--- BLUEBOT-XMD CONNECTED ---");
             console.log(`Bot Name : ${config.BOT_NAME}`);
             console.log(`Owner    : ${config.OWNER_NAME}`);
-            console.log(`Prefix   : ${config.PREFIX}`);
             console.log(`Mode     : ${config.MODE}`);
-            console.log("---------------------------\n");
+            console.log("-----------------------------\n");
+
+            // 🔹 SEND CONNECTED MESSAGE TO OWNER
+            const ownerJid = `${config.OWNER_NUMBER}@s.whatsapp.net`;
+            sock.sendMessage(ownerJid, { 
+                text: `🚀 *BLUEBOT-XMD bot connected*\n\nHave fun! ✨\n\n_System Status: Online_` 
+            }).catch(err => console.error("Failed to send connection message:", err));
         }
     });
 
