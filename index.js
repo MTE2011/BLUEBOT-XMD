@@ -99,22 +99,12 @@ async function startBot() {
             const cmdName = args.shift().toLowerCase();
             const text = args.join(" ");
 
+            const helper = require("./src/core/internal/helper");
             const sender = m.key.participant || m.key.remoteJid;
             const senderNumber = sender.split("@")[0].split(":")[0];
 
-            // ✅ Owner recognition
-            const ownerIDs = [
-                config.OWNER_NUMBER.replace(/[^0-9]/g, ""),
-                "259305043443928"
-            ];
-            const isOwner = ownerIDs.includes(senderNumber) || sender === "259305043443928@lid";
-
-            // ✅ Mods recognition
-            const modsList = (config.MODS || "")
-                .split(",")
-                .map(num => num.replace(/[^0-9]/g, "").trim())
-                .filter(Boolean);
-            const isMod = isOwner || modsList.includes(senderNumber);
+            const isOwner = helper.isOwner(senderNumber);
+            const isMod = helper.isMod(senderNumber);
 
             if (config.MODE === "private" && !isOwner) return;
 

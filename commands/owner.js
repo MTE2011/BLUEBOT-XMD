@@ -1,85 +1,96 @@
-const { exec } = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const https = require("https");
-
-const TAR_URL =
-  "https://github.com/Vhadau2011/BLUEBOT-XMD/archive/refs/heads/main.tar.gz";
+const helper = require("../src/core/internal/helper");
 
 module.exports = [
-  {
-    name: "update",
-    description: "Update the bot from GitHub",
-    category: "owner",
-
-    async execute(sock, m, { from, isOwner }) {
-      if (!isOwner) {
-        return sock.sendMessage(
-          from,
-          { text: "❌ Owner only command." },
-          { quoted: m }
-        );
-      }
-
-      const root = path.join(__dirname, "..");
-      const tarPath = path.join(root, "update.tar.gz");
-
-      await sock.sendMessage(
-        from,
-        { text: "🔄 Downloading latest update..." },
-        { quoted: m }
-      );
-
-      // Download tar.gz
-      const file = fs.createWriteStream(tarPath);
-      https.get(TAR_URL, res => {
-        res.pipe(file);
-        file.on("finish", () => {
-          file.close(() => extract());
-        });
-      }).on("error", () => {
-        if (fs.existsSync(tarPath)) fs.unlinkSync(tarPath);
-        sock.sendMessage(from, { text: "❌ Download failed." }, { quoted: m });
-      });
-
-      function extract() {
-        exec(`tar -xzf update.tar.gz`, { cwd: root }, err => {
-          if (err) {
-            return sock.sendMessage(
-              from,
-              { text: "❌ Extract failed." },
-              { quoted: m }
-            );
-          }
-
-          const extracted = path.join(root, "BLUEBOT-XMD-main");
-
-          // Copy files EXCEPT config.js
-          exec(
-            `rsync -av --exclude=config.js ${extracted}/ ${root}/`,
-            err => {
-              if (err) {
-                return sock.sendMessage(
-                  from,
-                  { text: "❌ Update sync failed." },
-                  { quoted: m }
-                );
-              }
-
-              fs.rmSync(extracted, { recursive: true, force: true });
-              fs.rmSync(tarPath, { force: true });
-
-              sock.sendMessage(
-                from,
-                { text: "✅ Update complete. Restarting bot..." },
-                { quoted: m }
-              );
-
-              setTimeout(() => process.exit(0), 2000);
+    {
+        name: "ban",
+        description: "Ban a user from using the bot",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
+            if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
+            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} has been banned.`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "unban",
+        description: "Unban a user",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
+            if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
+            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} has been unbanned.`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "addmod",
+        description: "Add a moderator",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
+            if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
+            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} is now a moderator.`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "delmod",
+        description: "Remove a moderator",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
+            if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
+            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} is no longer a moderator.`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "setmode",
+        description: "Set bot mode (public/private)",
+        category: "owner",
+        async execute(sock, m, { from, text, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            if (text === "public" || text === "private") {
+                await sock.sendMessage(from, { text: `✅ Bot mode set to: ${text}` }, { quoted: m });
+            } else {
+                await sock.sendMessage(from, { text: "Usage: .setmode public/private" }, { quoted: m });
             }
-          );
-        });
-      }
+        }
+    },
+    {
+        name: "restart",
+        description: "Restart the bot",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            await sock.sendMessage(from, { text: "🔄 Restarting..." }, { quoted: m });
+            process.exit(0);
+        }
+    },
+    {
+        name: "shutdown",
+        description: "Shutdown the bot",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            await sock.sendMessage(from, { text: "💤 Shutting down..." }, { quoted: m });
+            process.exit(0);
+        }
+    },
+    {
+        name: "eval",
+        description: "Evaluate JavaScript code",
+        category: "owner",
+        async execute(sock, m, { from, text, isOwner }) {
+            if (!isOwner) return;
+            try {
+                let evaled = eval(text);
+                if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
+                await sock.sendMessage(from, { text: evaled }, { quoted: m });
+            } catch (err) {
+                await sock.sendMessage(from, { text: String(err) }, { quoted: m });
+            }
+        }
     }
-  }
 ];

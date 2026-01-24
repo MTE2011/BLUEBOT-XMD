@@ -39,7 +39,7 @@ module.exports = {
 
         // ── HEADER ──
         let text = `
-╭──❖ *Re:Zero | Nexus* ❖──
+╭──❖ *BLUEBOT-XMD* ❖──
 │
 │ ⚔️ *Name* : ${config.BOT_NAME}
 │ ✨ *Prefix* : ${config.PREFIX}
