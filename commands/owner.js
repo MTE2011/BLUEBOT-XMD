@@ -10,7 +10,7 @@ module.exports = [
 
             await sock.sendMessage(from, { text: "🔄 *Updating BLUEBOT-XMD...*" }, { quoted: m });
             
-            exec("git pull", (err, stdout, stderr) => {
+            exec("git pull", { cwd: path.join(__dirname, "..") }, (err, stdout, stderr) => {
                 if (err) return sock.sendMessage(from, { text: `❌ Error: ${err.message}` }, { quoted: m });
                 if (stderr && !stderr.includes("Updating")) return sock.sendMessage(from, { text: `❌ Git Error: ${stderr}` }, { quoted: m });
                 
