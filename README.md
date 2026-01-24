@@ -1,108 +1,148 @@
-""
-# 💠 BLUEBOT-XMD 💠
+<div align="center">
 
-> **A powerful, multi-functional WhatsApp bot built with Baileys, designed for high performance and easy management.**
+# 💠 BLUEBOT-XMD 💠
+  
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=00BFFF&center=true&vCenter=true&width=435&lines=The+Ultimate+WhatsApp+Bot;Powerful+and+Multi-functional;Developed+by+Vhadau2011;Stay+Connected+with+BLUEBOT-XMD" alt="Typing SVG" />
+
+[![GitHub stars](https://img.shields.io/github/stars/Vhadau2011/BLUEBOT-XMD?style=for-the-badge&color=00BFFF)](https://github.com/Vhadau2011/BLUEBOT-XMD/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Vhadau2011/BLUEBOT-XMD?style=for-the-badge&color=00BFFF)](https://github.com/Vhadau2011/BLUEBOT-XMD/network/members)
+[![License](https://img.shields.io/github/license/Vhadau2011/BLUEBOT-XMD?style=for-the-badge&color=00BFFF)](https://github.com/Vhadau2011/BLUEBOT-XMD/blob/main/LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/Vhadau2011/BLUEBOT-XMD/graphs/commit-activity)
+
+---
+
+<p align="center">
+  <a href="#-overview">Overview</a> •
+  <a href="#-key-features">Features</a> •
+  <a href="#-installation--setup">Installation</a> •
+  <a href="#-command-categories">Commands</a> •
+  <a href="#-support--community">Support</a>
+</p>
+
+</div>
 
 ---
 
 ## 🚀 Overview
 
-**BLUEBOT-XMD** is a next-generation WhatsApp automation tool. It features a highly organized command structure, robust permission management, and a wide array of features ranging from group moderation to media downloading. Whether you're managing a large community or just looking for some fun, BLUEBOT-XMD has you covered.
+**BLUEBOT-XMD** is a state-of-the-art WhatsApp automation tool designed for efficiency, reliability, and ease of use. Built on the powerful **Baileys** library, it offers a seamless experience for both group administrators and individual users. With a highly modular structure and a robust permission system, BLUEBOT-XMD stands out as one of the most stable bots available today.
 
 ---
 
 ## 🌟 Key Features
 
-- **Organized Command System**: 180+ commands categorized into 7 dedicated files for optimal performance.
-- **Robust Permissions**: Advanced Owner and Mod identification system that works across all WhatsApp ID formats.
-- **Group Moderation**: Full suite of tools for admins (Kick, Promote, Demote, Mute/Unmute, TagAll, etc.).
-- **Media Downloader**: Download videos and music from various platforms with ease.
-- **Smart Menu**: A beautiful, categorized menu with a "Read More" feature to keep your chats clean.
-- **Auto-Update**: Keep your bot up to date directly from WhatsApp using the `.update` command.
-- **Pairing Code System**: Link your bot easily using a pairing code.
-- **Highly Configurable**: Customize over 15 settings in `config.js`.
+### 🛡️ Advanced Security & Permissions
+- **Robust Identification**: A unique ID normalization system that correctly identifies Owners and Mods regardless of WhatsApp's formatting.
+- **Mod Access**: Trusted moderators can now execute administrative commands, reducing the burden on the owner.
+- **Anti-Call**: Automatically rejects incoming calls to prevent bot interruption.
+
+### 📊 Superior Organization
+- **Consolidated Commands**: Over 180 commands neatly organized into 7 category-specific files.
+- **Smart Menu**: A visually appealing menu with a "Read More" feature to keep your chat interface clean and professional.
+
+### ⚡ High Performance
+- **Fast Response**: Optimized code for near-instant command execution.
+- **Auto-Update**: Keep your bot running the latest version with the `.update` command directly from WhatsApp.
+- **Pairing Code**: Easy connection method without the need for complex session scanning.
 
 ---
 
 ## 📂 Command Categories
 
-The bot features over **180 commands** organized into the following categories:
+BLUEBOT-XMD comes packed with a massive library of commands to suit every need:
 
-| Category | Description |
-| :--- | :--- |
-| 👥 **Group** | Complete management for WhatsApp groups. |
-| 👑 **Owner** | Exclusive controls for the bot owner and moderators. |
-| 🆘 **Support** | Help, documentation, and contact information. |
-| 🎮 **General** | Social commands, social interactions, and status. |
-| 🎉 **Fun** | Games, jokes, memes, and entertainment. |
-| 🔧 **Utility** | Practical tools like stickers, translation, and calculators. |
-| 📱 **Media** | High-speed downloaders for YouTube, TikTok, and more. |
+| Category | Icon | Description |
+| :--- | :---: | :--- |
+| **Group** | 👥 | Complete management: Kick, Promote, Demote, Mute, TagAll, and more. |
+| **Owner** | 👑 | Exclusive controls: Update, SetMode, Eval, Broadcast, and Mod management. |
+| **Support** | 🆘 | Help center: Support links, FAQ, Documentation, and Bug Reporting. |
+| **General** | 🎮 | Social & Status: AFK, Social interactions, Ping, Uptime, and Social info. |
+| **Fun** | 🎉 | Entertainment: Games, Jokes, Memes, and interactive fun. |
+| **Utility** | 🔧 | Tools: Sticker maker, Translation, Calculator, and Weather. |
+| **Media** | 📱 | Downloaders: High-speed downloads for YouTube, TikTok, Instagram, etc. |
 
 ---
 
 ## ⚙️ Installation & Setup
 
-### 1. Clone the Repository
+Follow these steps to get your own instance of BLUEBOT-XMD up and running:
+
+### 1️⃣ Prerequisites
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [Git](https://git-scm.com/)
+- A WhatsApp account
+
+### 2️⃣ Clone the Repository
 ```bash
 git clone https://github.com/Vhadau2011/BLUEBOT-XMD.git
 cd BLUEBOT-XMD
 ```
 
-### 2. Install Dependencies
+### 3️⃣ Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Configure the Bot
-Edit the `config.js` file with your details:
-- `SESSION_ID`: Your pairing session ID.
-- `OWNER_NUMBER`: Your WhatsApp number (with country code).
-- `MODS`: Numbers of your trusted moderators.
-- `PREFIX`: Your preferred command prefix (e.g., `.`).
+### 4️⃣ Configuration
+Open `config.js` and fill in your details:
+```javascript
+module.exports = {
+    SESSION_ID: "your_session_id",
+    OWNER_NUMBER: "your_number", // e.g., 27744332007
+    MODS: "mod1,mod2", // Trusted moderator numbers
+    PREFIX: ".",
+    BOT_NAME: "BLUEBOT-XMD",
+    // ... other settings
+};
+```
 
-### 4. Start the Bot
+### 5️⃣ Launch the Bot
 ```bash
 npm start
 ```
 
-### 5. Pairing
-When prompted in the console:
-1. Enter your phone number (with country code, e.g., `27686827802`).
-2. Copy the pairing code shown in the console.
-3. Open WhatsApp > Linked Devices > Link with Phone Number Instead.
-4. Enter the code.
+### 6️⃣ Pairing
+When the console asks for your number, enter it with the country code. Use the provided pairing code in WhatsApp (Linked Devices > Link with Phone Number) to connect.
 
 ---
 
 ## 🆘 Support & Community
 
-Need help? Join our official communities to get the latest updates, report bugs, or suggest new features!
+We are here to help! Join our vibrant community for support, updates, and feature requests.
 
-🔹 **Support Community (WhatsApp):**
-[Join WhatsApp Group](https://chat.whatsapp.com/GsjslOuJbLBBQZfsqa6M7w)
+<div align="center">
 
-🔹 **Support Server (Discord):**
-[Join Discord Server](https://discord.gg/wBCExgWR)
+| Platform | Link |
+| :--- | :--- |
+| 🔹 **WhatsApp Community** | [Join Now](https://chat.whatsapp.com/GsjslOuJbLBBQZfsqa6M7w) |
+| 🔹 **Discord Server** | [Join Now](https://discord.gg/wBCExgWR) |
+
+</div>
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+We welcome contributions! If you have an idea for a new feature or have found a bug, please open an issue or submit a pull request.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. **Fork** the repository.
+2. **Create** a new branch (`git checkout -b feature/AmazingFeature`).
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
+4. **Push** to the branch (`git push origin feature/AmazingFeature`).
+5. **Open** a Pull Request.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full text and additional terms.
 
 ---
 
-**Developed with ❤️ by [Vhadau2011](https://github.com/Vhadau2011)**
-""
+<div align="center">
+
+### Developed with ❤️ by [Vhadau2011](https://github.com/Vhadau2011)
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=00BFFF&height=100&section=footer" width="100%" />
+
+</div>
