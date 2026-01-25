@@ -1,6 +1,33 @@
 const helper = require("../src/core/internal/helper");
+const { exec } = require("child_process");
 
 module.exports = [
+    {
+        name: "update",
+        description: "Update the bot from GitHub",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            
+            await sock.sendMessage(from, { text: "🔄 Checking for updates..." }, { quoted: m });
+            
+            exec("git pull", (err, stdout, stderr) => {
+                if (err) {
+                    return sock.sendMessage(from, { text: `❌ Update failed: ${err.message}` }, { quoted: m });
+                }
+                
+                if (stdout.includes("Already up to date.")) {
+                    return sock.sendMessage(from, { text: "✅ Bot is already up to date!" }, { quoted: m });
+                }
+                
+                sock.sendMessage(from, { text: `✅ Update successful!\n\n*Changes:*\n${stdout}\n\nRestarting bot...` }, { quoted: m });
+                
+                setTimeout(() => {
+                    process.exit(0);
+                }, 2000);
+            });
+        }
+    },
     {
         name: "ban",
         description: "Ban a user from using the bot",
