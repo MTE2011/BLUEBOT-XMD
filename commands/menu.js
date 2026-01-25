@@ -7,8 +7,7 @@ module.exports = {
     category: "general",
 
     async execute(sock, m, { from, config }) {
-        // ← THIS IS THE KEY: define readMore
-        const readMore = '\u200B'.repeat(4001); // WhatsApp hides everything after this until "Read More"
+        const readMore = '\u200B'.repeat(4001);
 
         const commandsDir = path.join(__dirname);
         const categories = {};
@@ -19,15 +18,14 @@ module.exports = {
                 const fullPath = path.join(dir, file);
                 const stat = fs.statSync(fullPath);
 
-                if (stat.isDirectory()) {
-                    loadCommands(fullPath);
-                } else if (file.endsWith(".js") && file !== "menu.js") {
+                if (stat.isDirectory()) loadCommands(fullPath);
+                else if (file.endsWith(".js") && file !== "menu.js") {
                     delete require.cache[require.resolve(fullPath)];
                     const exp = require(fullPath);
                     const cmds = Array.isArray(exp) ? exp : [exp];
 
                     cmds.forEach(cmd => {
-                        const cat = (cmd.category || "general").toUpperCase();
+                        const cat = (cmd.category || "GENERAL").toUpperCase();
                         if (!categories[cat]) categories[cat] = [];
                         categories[cat].push(cmd.name);
                     });
@@ -37,38 +35,53 @@ module.exports = {
 
         loadCommands(commandsDir);
 
-        // ── HEADER ──
+        // ── MENU TEXT ──
         let text = `
-╭──❖ *BLUEBOT-XMD* ❖──
-│
-│ ⚔️ *Name* : ${config.BOT_NAME}
-│ ✨ *Prefix* : ${config.PREFIX}
-│ 👑 *Owner* : ${config.OWNER_NAME}
-│ 🌐 *Mode* : ${config.MODE}
-╰────────────────────
-${readMore}`;
-
-        // ── COMMAND MENU ──
-        text += `\n╭───『 *COMMAND MENU* 』───\n│\n`;
-
-        for (const [cat, cmds] of Object.entries(categories)) {
-            text += `╭・📌 *${cat}* (${cmds.length})\n`;
-            text += `┃・\n`;
-            cmds.forEach(cmd => {
-                text += ` ${cmd}\n┃・`;
-            });
-            text += `\n│\n`;
-        }
-
-        // ── FOOTER ──
-        text += `
-╰────────────────────
-
-  📌 *Developers* :
-     *mudau_t*
-       *✦⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅✦*
+╔═══════════════╗
+     ❖ Re:Zero | Nexus ❖
+╚═══════════════╝
+👑 *Owner :* ${config.OWNER_NAME}
+✨ *Prefix:* ${config.PREFIX}
+🌐 *Mode  :* ${config.MODE}
+────────────────────
+${readMore}
 `;
 
-        await sock.sendMessage(from, { text }, { quoted: m });
+        for (const [cat, cmds] of Object.entries(categories)) {
+            text += `\n📂 *${cat}* (${cmds.length})\n`;
+            text += '────────────────────\n';
+            cmds.forEach(cmd => text += `• ${cmd}\n`);
+        }
+
+        text += `
+────────────────────
+${readMore} 💻 Developer: mudau_t
+🚀 Enjoy your bot!
+`;
+
+        // ── SEND IMAGE ──
+        if (config.MENU_IMAGE) {
+            // If MENU_IMAGE is a URL
+            if (config.MENU_IMAGE.startsWith("http")) {
+                await sock.sendMessage(from, {
+                    image: { url: config.MENU_IMAGE },
+                    caption: text
+                }, { quoted: m });
+            } else {
+                // If MENU_IMAGE is a local file path
+                const imagePath = path.resolve(config.MENU_IMAGE);
+                if (fs.existsSync(imagePath)) {
+                    await sock.sendMessage(from, {
+                        image: fs.readFileSync(imagePath),
+                        caption: text
+                    }, { quoted: m });
+                } else {
+                    // fallback: text only
+                    await sock.sendMessage(from, { text }, { quoted: m });
+                }
+            }
+        } else {
+            await sock.sendMessage(from, { text }, { quoted: m });
+        }
     }
 };
