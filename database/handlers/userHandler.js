@@ -1,4 +1,5 @@
 const config = require("../../config");
+const db = require("../db_manager");
 
 const blue = { bot: {} };
 
@@ -45,6 +46,18 @@ blue.bot.isAdmin = async (sock, from, participant) => {
         console.error("Error checking admin status:", e);
         return false;
     }
+};
+
+/**
+ * Checks if a user or group is banned.
+ * @param {string} userJid - The user's JID.
+ * @param {string} groupJid - The group's JID (optional).
+ * @returns {boolean}
+ */
+blue.bot.isBanned = (userJid, groupJid = null) => {
+    if (db.isUserBanned(userJid)) return true;
+    if (groupJid && db.isGroupBanned(groupJid)) return true;
+    return false;
 };
 
 module.exports = blue.bot;

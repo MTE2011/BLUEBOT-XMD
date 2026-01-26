@@ -1,4 +1,5 @@
 const { exec } = require("child_process");
+const db = require("../database/db_manager");
 
 const blue = { bot: [] };
 
@@ -37,7 +38,9 @@ blue.bot.push(
             if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
             const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
             if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
-            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} has been banned.`, mentions: [target] }, { quoted: m });
+            
+            db.banUser(target);
+            await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} has been banned from using the bot.`, mentions: [target] }, { quoted: m });
         }
     },
     {
@@ -48,7 +51,33 @@ blue.bot.push(
             if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
             const target = m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || m.message?.extendedTextMessage?.contextInfo?.participant;
             if (!target) return sock.sendMessage(from, { text: "❌ Tag or reply to a user." }, { quoted: m });
+            
+            db.unbanUser(target);
             await sock.sendMessage(from, { text: `✅ @${target.split("@")[0]} has been unbanned.`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "bangroup",
+        description: "Ban this group from using the bot",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            if (!from.endsWith("@g.us")) return sock.sendMessage(from, { text: "❌ This command is for groups only." }, { quoted: m });
+            
+            db.banGroup(from);
+            await sock.sendMessage(from, { text: "✅ This group has been banned from using the bot." }, { quoted: m });
+        }
+    },
+    {
+        name: "unbangroup",
+        description: "Unban this group",
+        category: "owner",
+        async execute(sock, m, { from, isOwner }) {
+            if (!isOwner) return sock.sendMessage(from, { text: "❌ Owner only command." }, { quoted: m });
+            if (!from.endsWith("@g.us")) return sock.sendMessage(from, { text: "❌ This command is for groups only." }, { quoted: m });
+            
+            db.unbanGroup(from);
+            await sock.sendMessage(from, { text: "✅ This group has been unbanned." }, { quoted: m });
         }
     },
     {

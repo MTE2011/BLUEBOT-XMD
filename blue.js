@@ -1,4 +1,4 @@
-const { isAdmin, isMod, isOwner } = require("./database/handlers/userHandler");
+const { isAdmin, isMod, isOwner, isBanned } = require("./database/handlers/userHandler");
 const config = require("./config");
 
 const blue = { bot: {} };
@@ -53,5 +53,6 @@ blue.bot.handleGroupUpdate = async (sock, anu) => {
 blue.bot.isAdmin = isAdmin;
 blue.bot.isMod = isMod;
 blue.bot.isOwner = isOwner;
+blue.bot.isBanned = isBanned;
 
 module.exports = blue.bot;

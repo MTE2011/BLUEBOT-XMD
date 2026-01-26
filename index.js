@@ -17,7 +17,7 @@ const config = require("./config");
 const blue = { bot: {} };
 
 // Import handlers using the new export style
-const { handleGroupParticipantsUpdate, isAdmin, isMod, isOwner } = require("./blue.js");
+const { handleGroupParticipantsUpdate, isAdmin, isMod, isOwner, isBanned } = require("./blue.js");
 
 // Ensure session directory exists
 if (!fs.existsSync(config.SESSION_ID)) {
@@ -71,6 +71,8 @@ async function startBot() {
 
     // Participants update handler (Welcome)
     sock.ev.on("group-participants.update", async (anu) => {
+        // Don't send welcome messages in banned groups
+        if (isBanned("", anu.id)) return;
         await handleGroupParticipantsUpdate(sock, anu);
     });
 
@@ -107,6 +109,13 @@ async function startBot() {
             if (!m.message || m.key.fromMe) return;
 
             const from = m.key.remoteJid;
+            const sender = m.key.participant || m.key.remoteJid;
+            const senderNumber = sender.split("@")[0].split(":")[0];
+
+            // Check if user or group is banned
+            const _isOwner = isOwner(senderNumber);
+            if (!_isOwner && isBanned(sender, from)) return;
+
             const body =
                 m.message.conversation ||
                 m.message.extendedTextMessage?.text ||
@@ -120,10 +129,6 @@ async function startBot() {
             const cmdName = args.shift().toLowerCase();
             const text = args.join(" ");
 
-            const sender = m.key.participant || m.key.remoteJid;
-            const senderNumber = sender.split("@")[0].split(":")[0];
-
-            const _isOwner = isOwner(senderNumber);
             const _isMod = isMod(senderNumber);
             const _isAdmin = await isAdmin(sock, from, sender);
 
@@ -144,10 +149,7 @@ async function startBot() {
                         try {
                             delete require.cache[require.resolve(itemPath)];
                             const exported = require(itemPath);
-                            // Support both array and object exports (blue.bot)
                             const cmds = Array.isArray(exported) ? exported : (exported && typeof exported === 'object' ? Object.values(exported) : []);
-                            
-                            // If it's the new blue.bot format, it might be an array directly
                             const finalCmds = Array.isArray(cmds[0]) ? cmds[0] : cmds;
 
                             finalCmds.forEach(cmd => {
