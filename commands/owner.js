@@ -1,6 +1,8 @@
 const { exec } = require("child_process");
 
-module.exports = [
+const blue = { bot: [] };
+
+blue.bot.push(
     {
         name: "update",
         description: "Update the bot from GitHub",
@@ -119,4 +121,6 @@ module.exports = [
             }
         }
     }
-];
+);
+
+module.exports = blue.bot;

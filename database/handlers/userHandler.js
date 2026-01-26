@@ -1,11 +1,13 @@
 const config = require("../../config");
 
+const blue = { bot: {} };
+
 /**
  * Checks if a user is the bot owner.
  * @param {string} senderNumber - The sender's phone number (without @s.whatsapp.net).
  * @returns {boolean}
  */
-const isOwner = (senderNumber) => {
+blue.bot.isOwner = (senderNumber) => {
     const ownerNumber = config.OWNER_NUMBER.replace(/[^0-9]/g, "");
     return senderNumber === ownerNumber;
 };
@@ -15,8 +17,8 @@ const isOwner = (senderNumber) => {
  * @param {string} senderNumber - The sender's phone number (without @s.whatsapp.net).
  * @returns {boolean}
  */
-const isMod = (senderNumber) => {
-    if (isOwner(senderNumber)) return true;
+blue.bot.isMod = (senderNumber) => {
+    if (blue.bot.isOwner(senderNumber)) return true;
     const modsList = (config.MODS || "")
         .split(",")
         .map(num => num.replace(/[^0-9]/g, "").trim())
@@ -31,7 +33,7 @@ const isMod = (senderNumber) => {
  * @param {string} participant - The participant JID.
  * @returns {Promise<boolean>}
  */
-const isAdmin = async (sock, from, participant) => {
+blue.bot.isAdmin = async (sock, from, participant) => {
     if (!from.endsWith("@g.us")) return false;
     try {
         const groupMetadata = await sock.groupMetadata(from);
@@ -45,8 +47,4 @@ const isAdmin = async (sock, from, participant) => {
     }
 };
 
-module.exports = {
-    isOwner,
-    isMod,
-    isAdmin
-};
+module.exports = blue.bot;

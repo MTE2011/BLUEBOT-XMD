@@ -1,6 +1,6 @@
-const helper = require("../src/core/internal/helper");
+const blue = { bot: [] };
 
-module.exports = [
+blue.bot.push(
     {
         name: "antilink",
         description: "Enable/Disable antilink",
@@ -191,4 +191,6 @@ module.exports = [
             await sock.sendMessage(from, { text: "✅ Antilink settings reset." }, { quoted: m });
         }
     }
-];
+);
+
+module.exports = blue.bot;

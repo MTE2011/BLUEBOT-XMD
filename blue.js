@@ -1,16 +1,16 @@
 const { isAdmin, isMod, isOwner } = require("./database/handlers/userHandler");
 const config = require("./config");
 
+const blue = { bot: {} };
+
 /**
  * Handles group participants update events (Welcome/Goodbye).
  * @param {object} sock - The socket connection.
  * @param {object} anu - The update event data.
  */
-async function handleGroupParticipantsUpdate(sock, anu) {
+blue.bot.handleGroupParticipantsUpdate = async (sock, anu) => {
     try {
         const { id, participants, action } = anu;
-        // In a real scenario, you might fetch settings from a database here.
-        // For now, we use the config or a simple global object.
         
         if (action === "add") {
             const metadata = await sock.groupMetadata(id);
@@ -39,22 +39,19 @@ async function handleGroupParticipantsUpdate(sock, anu) {
     } catch (err) {
         console.error("Group Participants Update Error:", err);
     }
-}
+};
 
 /**
  * Handles group metadata updates or other group-related events.
  * @param {object} sock - The socket connection.
  * @param {object} anu - The update event data.
  */
-async function handleGroupUpdate(sock, anu) {
-    // Logic for group settings changes (subject, description, etc.)
+blue.bot.handleGroupUpdate = async (sock, anu) => {
     console.log("Group Update:", anu);
-}
-
-module.exports = {
-    handleGroupParticipantsUpdate,
-    handleGroupUpdate,
-    isAdmin,
-    isMod,
-    isOwner
 };
+
+blue.bot.isAdmin = isAdmin;
+blue.bot.isMod = isMod;
+blue.bot.isOwner = isOwner;
+
+module.exports = blue.bot;

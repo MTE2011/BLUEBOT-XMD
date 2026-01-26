@@ -1,4 +1,6 @@
-module.exports = [
+const blue = { bot: [] };
+
+blue.bot.push(
     { name: "afk", description: "Set AFK", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "✅ You are now AFK" }, { quoted: m }); } },
     { name: "rank", description: "Check rank", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "📊 Your rank: 1" }, { quoted: m }); } },
     { name: "info", description: "Bot info", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "🤖 BLUEBOT-XMD Info" }, { quoted: m }); } },
@@ -39,4 +41,6 @@ module.exports = [
     { name: "lyrics", description: "Get lyrics", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "🎵 Lyrics..." }, { quoted: m }); } },
     { name: "imdb", description: "Movie info", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "🎬 Movie Info..." }, { quoted: m }); } },
     { name: "anime", description: "Anime info", category: "general", async execute(sock, m, { from }) { await sock.sendMessage(from, { text: "⛩️ Anime Info..." }, { quoted: m }); } }
-];
+);
+
+module.exports = blue.bot;

@@ -14,8 +14,10 @@ const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
 const config = require("./config");
-const { handleGroupParticipantsUpdate } = require("./blue.js");
-const { isOwner, isMod, isAdmin } = require("./database/handlers/userHandler");
+const blue = { bot: {} };
+
+// Import handlers using the new export style
+const { handleGroupParticipantsUpdate, isAdmin, isMod, isOwner } = require("./blue.js");
 
 // Ensure session directory exists
 if (!fs.existsSync(config.SESSION_ID)) {
@@ -142,8 +144,13 @@ async function startBot() {
                         try {
                             delete require.cache[require.resolve(itemPath)];
                             const exported = require(itemPath);
-                            const cmds = Array.isArray(exported) ? exported : [exported];
-                            cmds.forEach(cmd => {
+                            // Support both array and object exports (blue.bot)
+                            const cmds = Array.isArray(exported) ? exported : (exported && typeof exported === 'object' ? Object.values(exported) : []);
+                            
+                            // If it's the new blue.bot format, it might be an array directly
+                            const finalCmds = Array.isArray(cmds[0]) ? cmds[0] : cmds;
+
+                            finalCmds.forEach(cmd => {
                                 if (cmd && cmd.name) {
                                     if (!cmd.category) {
                                         const relative = path.relative(commandsPath, itemPath);
@@ -189,4 +196,10 @@ async function startBot() {
     });
 }
 
-startBot().catch(err => console.error("START ERROR:", err));
+blue.bot.start = startBot;
+module.exports = blue.bot;
+
+// Self-start if this is the main module
+if (require.main === module) {
+    startBot().catch(err => console.error("START ERROR:", err));
+}
