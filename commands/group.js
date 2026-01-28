@@ -1,68 +1,14 @@
-const storage = require("../src/core/internal/storage");
 const { isBotAdmin } = require("../database/handlers/userHandler");
+const config = require("../config");
 
 const blue = { bot: [] };
 
 blue.bot.push(
     {
-        name: "antilink",
-        description: "Configure antilink system",
-        category: "group",
-        async execute(sock, m, { from, sender, args, isMod, isAdmin }) {
-            if (!from.endsWith("@g.us")) return sock.sendMessage(from, { text: "❌ This command can only be used in groups." }, { quoted: m });
-            
-            const botIsAdmin = await isBotAdmin(sock, from);
-
-            if (!isAdmin && !isMod) return sock.sendMessage(from, { text: "❌ Only group admins can use this command." }, { quoted: m });
-            if (!botIsAdmin) return sock.sendMessage(from, { text: "❌ I must be an admin to enforce antilink." }, { quoted: m });
-
-            const mode = args[0]?.toLowerCase();
-            if (mode === "warn") {
-                const count = parseInt(args[1]) || 3;
-                storage.updateGroup(from, { antilink: "warn", warnLimit: count });
-                await sock.sendMessage(from, { text: `✅ Antilink set to *warn* with limit: ${count}` }, { quoted: m });
-            } else if (mode === "delete") {
-                storage.updateGroup(from, { antilink: "delete" });
-                await sock.sendMessage(from, { text: "✅ Antilink set to *delete* mode." }, { quoted: m });
-            } else if (mode === "kick") {
-                storage.updateGroup(from, { antilink: "kick" });
-                await sock.sendMessage(from, { text: "✅ Antilink set to *kick* mode." }, { quoted: m });
-            } else if (mode === "off") {
-                storage.updateGroup(from, { antilink: "off" });
-                await sock.sendMessage(from, { text: "✅ Antilink disabled." }, { quoted: m });
-            } else {
-                await sock.sendMessage(from, { text: "❌ Usage:\n.antilink warn <count>\n.antilink delete\n.antilink kick\n.antilink off" }, { quoted: m });
-            }
-        }
-    },
-    {
-        name: "setwelcome",
-        description: "Configure welcome system",
-        category: "group",
-        async execute(sock, m, { from, sender, text, args, isMod, isAdmin }) {
-            if (!from.endsWith("@g.us")) return sock.sendMessage(from, { text: "❌ This command can only be used in groups." }, { quoted: m });
-            if (!isAdmin && !isMod) return sock.sendMessage(from, { text: "❌ Only group admins can use this command." }, { quoted: m });
-
-            const mode = args[0]?.toLowerCase();
-            if (mode === "on") {
-                storage.updateGroup(from, { welcome: "on" });
-                await sock.sendMessage(from, { text: "✅ Welcome system enabled." }, { quoted: m });
-            } else if (mode === "off") {
-                storage.updateGroup(from, { welcome: "off" });
-                await sock.sendMessage(from, { text: "✅ Welcome system disabled." }, { quoted: m });
-            } else if (text) {
-                storage.updateGroup(from, { welcomeMessage: text });
-                await sock.sendMessage(from, { text: "✅ Welcome message updated!" }, { quoted: m });
-            } else {
-                await sock.sendMessage(from, { text: "❌ Usage:\n.setwelcome on/off\n.setwelcome <message>\n\nPlaceholders: {user}, {group}, {count}" }, { quoted: m });
-            }
-        }
-    },
-    {
         name: "kick",
         description: "Remove a member",
         category: "group",
-        async execute(sock, m, { from, sender, isMod, isAdmin }) {
+        async execute(sock, m, { from, isMod, isAdmin }) {
             if (!from.endsWith("@g.us")) return;
             const botIsAdmin = await isBotAdmin(sock, from);
 
@@ -83,7 +29,7 @@ blue.bot.push(
         name: "promote",
         description: "Promote to admin",
         category: "group",
-        async execute(sock, m, { from, sender, isMod, isAdmin }) {
+        async execute(sock, m, { from, isMod, isAdmin }) {
             if (!from.endsWith("@g.us")) return;
             const botIsAdmin = await isBotAdmin(sock, from);
 
@@ -101,7 +47,7 @@ blue.bot.push(
         name: "demote",
         description: "Demote from admin",
         category: "group",
-        async execute(sock, m, { from, sender, isMod, isAdmin }) {
+        async execute(sock, m, { from, isMod, isAdmin }) {
             if (!from.endsWith("@g.us")) return;
             const botIsAdmin = await isBotAdmin(sock, from);
 
@@ -116,6 +62,24 @@ blue.bot.push(
 
             await sock.groupParticipantsUpdate(from, [target], "demote");
             await sock.sendMessage(from, { text: `✅ Demoted @${target.split("@")[0]}`, mentions: [target] }, { quoted: m });
+        }
+    },
+    {
+        name: "tagall",
+        description: "Tag all members",
+        category: "group",
+        async execute(sock, m, { from, text, isMod, isAdmin }) {
+            if (!from.endsWith("@g.us")) return;
+            if (!isAdmin && !isMod) return;
+            
+            const metadata = await sock.groupMetadata(from);
+            const participants = metadata.participants;
+            let msg = `*TAG ALL*\n\n*Message:* ${text || "No message"}\n\n`;
+            participants.forEach(p => {
+                msg += `@${p.id.split("@")[0]} `;
+            });
+            
+            await sock.sendMessage(from, { text: msg, mentions: participants.map(p => p.id) }, { quoted: m });
         }
     }
 );
