@@ -36,8 +36,13 @@ async function startBot() {
             creds: state.creds,
             keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" }))
         },
-        browser: Browsers.macOS("Desktop"),
-        syncFullHistory: true
+        browser: Browsers.ubuntu("Chrome"),
+        syncFullHistory: false,
+        markOnlineOnConnect: true,
+        connectTimeoutMs: 60000,
+        defaultQueryTimeoutMs: 0,
+        keepAliveIntervalMs: 10000,
+        generateHighQualityLinkPreview: true
     });
 
     // Pairing for unregistered session
@@ -53,14 +58,20 @@ async function startBot() {
         number = number.replace(/[^0-9]/g, "");
         
         if (number.length > 5) {
-            console.log("Requesting pairing code...");
-            await delay(2000);
+            console.log(`\nRequesting pairing code for: ${number}...`);
+            await delay(3000); // Increased delay for stability
             try {
                 const code = await sock.requestPairingCode(number);
-                console.log(`\n✅ Your Pairing Code: ${code}\n`);
-                console.log("Enter this code in your WhatsApp:");
-                console.log("Go to: Linked Devices > Link with phone number\n");
-                console.log("Waiting for pairing to complete...\n");
+                console.log(`\n╔════════════════════════════════════╗`);
+                console.log(`║      ✅ YOUR PAIRING CODE: ${code}    ║`);
+                console.log(`╚════════════════════════════════════╝\n`);
+                console.log("HOW TO USE:");
+                console.log("1. Open WhatsApp on your phone");
+                console.log("2. Go to Settings > Linked Devices");
+                console.log("3. Tap 'Link a Device'");
+                console.log("4. Tap 'Link with phone number instead'");
+                console.log("5. Enter the code above\n");
+                console.log("Waiting for connection...\n");
             } catch (err) {
                 console.error("Failed to request pairing code:", err);
                 console.error("Please ensure the number is correct and try again.");
