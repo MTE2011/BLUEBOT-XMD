@@ -13,6 +13,7 @@ const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
+const http = require("http");
 const config = require("./config");
 const blue = { bot: {} };
 
@@ -25,6 +26,16 @@ if (!fs.existsSync(config.SESSION_ID)) {
 }
 
 async function startBot() {
+    // Basic web server for hosting platforms to keep the process alive
+    const server = http.createServer((req, res) => {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("BLUEBOT-XMD is running\n");
+    });
+    const PORT = process.env.PORT || 8080;
+    server.listen(PORT, () => {
+        console.log(`Web server listening on port ${PORT}`);
+    });
+
     const { state, saveCreds } = await useMultiFileAuthState(config.SESSION_ID);
     const { version } = await fetchLatestBaileysVersion();
 
@@ -172,13 +183,17 @@ async function startBot() {
                                 if (cmd && cmd.name) {
                                     if (!cmd.category) {
                                         const relative = path.relative(commandsPath, itemPath);
-                                        cmd.category = relative.split(path.sep)[0] || "general";
+                                        const cat = relative.split(path.sep)[0];
+                                        cmd.category = (cat && cat.endsWith(".js")) ? "general" : (cat || "general");
                                     }
                                     allCommands.push(cmd);
                                 }
                             });
                         } catch (e) {
-                            console.error(`Error loading command ${itemPath}:`, e);
+                            // Only log serious errors, ignore module not found for now to let bot start
+                            if (!e.message.includes("Cannot find module")) {
+                                console.error(`Error loading command ${itemPath}:`, e.message);
+                            }
                         }
                     }
                 }

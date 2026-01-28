@@ -1,54 +1,29 @@
-const fs = require("fs");
-const path = require("path");
+const { bluebot, commands, config } = require("../src/core/kord_adapter");
 
-const blue = { bot: {} };
-
-blue.bot.name = "menu";
-blue.bot.description = "Show full command menu";
-blue.bot.category = "general";
-
-blue.bot.execute = async (sock, m, { from, config }) => {
+bluebot({
+    cmd: "menu",
+    desc: "Show full command menu",
+    type: "general",
+}, async (m, text) => {
     const readMore = '\u200B'.repeat(4001);
-
-    const commandsDir = path.join(__dirname);
     const categories = {};
 
-    // 🔁 Load commands recursively
-    const loadCommands = (dir) => {
-        for (const file of fs.readdirSync(dir)) {
-            const fullPath = path.join(dir, file);
-            const stat = fs.statSync(fullPath);
-
-            if (stat.isDirectory()) loadCommands(fullPath);
-            else if (file.endsWith(".js") && file !== "menu.js") {
-                try {
-                    delete require.cache[require.resolve(fullPath)];
-                    const exp = require(fullPath);
-                    
-                    // Support both array and object exports (blue.bot)
-                    const cmds = Array.isArray(exp) ? exp : (exp && typeof exp === 'object' ? Object.values(exp) : []);
-                    const finalCmds = Array.isArray(cmds[0]) ? cmds[0] : cmds;
-
-                    finalCmds.forEach(cmd => {
-                        if (cmd && cmd.name) {
-                            const cat = (cmd.category || "GENERAL").toUpperCase();
-                            if (!categories[cat]) categories[cat] = [];
-                            if (!categories[cat].includes(cmd.name)) {
-                                categories[cat].push(cmd.name);
-                            }
-                        }
-                    });
-                } catch (e) {
-                    console.error(`Error loading command in menu: ${fullPath}`, e);
-                }
+    // Organize commands into categories
+    commands.forEach(cmd => {
+        if (cmd && cmd.name) {
+            const cat = (cmd.category || "GENERAL").toUpperCase();
+            if (!categories[cat]) categories[cat] = [];
+            if (!categories[cat].includes(cmd.name)) {
+                categories[cat].push(cmd.name);
             }
         }
-    };
+    });
 
-    loadCommands(commandsDir);
+    // Sort categories alphabetically
+    const sortedCategories = Object.keys(categories).sort();
 
     // ── MENU TEXT ──
-    let text = `
+    let menuText = `
 ╔═══════════════╗
      ❖ BLUEBOT-XMD ❖
 ╚═══════════════╝
@@ -59,39 +34,30 @@ blue.bot.execute = async (sock, m, { from, config }) => {
 ${readMore}
 `;
 
-    for (const [cat, cmds] of Object.entries(categories)) {
-        text += `\n📂 *${cat}* (${cmds.length})\n`;
-        text += '────────────────────\n';
-        cmds.forEach(cmd => text += `• ${cmd}\n`);
+    for (const cat of sortedCategories) {
+        const cmds = categories[cat];
+        menuText += `\n📂 *${cat}* (${cmds.length})\n`;
+        menuText += '────────────────────\n';
+        
+        // Arrange commands in a grid or list
+        let cmdList = "";
+        for (let i = 0; i < cmds.length; i++) {
+            cmdList += `• ${cmds[i]}\n`;
+        }
+        menuText += cmdList;
     }
 
-    text += `
+    menuText += `
 ────────────────────
 ${readMore} 💻 Developer: mudau_t
 🚀 Enjoy your bot!
 `;
 
-    // ── SEND IMAGE ──
-    if (config.MENU_IMAGE) {
-        if (config.MENU_IMAGE.startsWith("http")) {
-            await sock.sendMessage(from, {
-                image: { url: config.MENU_IMAGE },
-                caption: text
-            }, { quoted: m });
-        } else {
-            const imagePath = path.resolve(config.MENU_IMAGE);
-            if (fs.existsSync(imagePath)) {
-                await sock.sendMessage(from, {
-                    image: fs.readFileSync(imagePath),
-                    caption: text
-                }, { quoted: m });
-            } else {
-                await sock.sendMessage(from, { text }, { quoted: m });
-            }
-        }
-    } else {
-        await sock.sendMessage(from, { text }, { quoted: m });
-    }
-};
-
-module.exports = blue.bot;
+    // ── SEND MENU ──
+    const menuImage = config.MENU_IMAGE || "https://files.catbox.moe/p9i3jp.jpg";
+    
+    await m.client.sendMessage(m.chat, {
+        image: { url: menuImage },
+        caption: menuText
+    }, { quoted: m });
+});
