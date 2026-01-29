@@ -247,7 +247,11 @@ Don't Forget To Give Star⭐ To My Repo`;
             if (config.MODE === "private" && !_isOwner) return;
 
             const commandsPath = path.join(__dirname, "commands");
-            const allCommands = [];
+            const adapterPath = path.join(__dirname, "src", "core", "bluebot_adapter.js");
+            
+            // Clear adapter's command list before reloading
+            const adapter = require(adapterPath);
+            adapter.commands.length = 0;
 
             const loadFolderCommands = (dir) => {
                 if (!fs.existsSync(dir)) return;
@@ -259,22 +263,8 @@ Don't Forget To Give Star⭐ To My Repo`;
                     } else if (item.endsWith(".js")) {
                         try {
                             delete require.cache[require.resolve(itemPath)];
-                            const exported = require(itemPath);
-                            const cmds = Array.isArray(exported) ? exported : (exported && typeof exported === 'object' ? Object.values(exported) : []);
-                            const finalCmds = Array.isArray(cmds[0]) ? cmds[0] : cmds;
-
-                            finalCmds.forEach(cmd => {
-                                if (cmd && cmd.name) {
-                                    if (!cmd.category) {
-                                        const relative = path.relative(commandsPath, itemPath);
-                                        const cat = relative.split(path.sep)[0];
-                                        cmd.category = (cat && cat.endsWith(".js")) ? "general" : (cat || "general");
-                                    }
-                                    allCommands.push(cmd);
-                                }
-                            });
+                            require(itemPath);
                         } catch (e) {
-                            // Only log serious errors, ignore module not found for now to let bot start
                             if (!e.message.includes("Cannot find module")) {
                                 console.error(`Error loading command ${itemPath}:`, e.message);
                             }
@@ -284,6 +274,7 @@ Don't Forget To Give Star⭐ To My Repo`;
             };
 
             loadFolderCommands(commandsPath);
+            const allCommands = adapter.commands;
 
             const command = allCommands.find(c => c.name.toLowerCase() === cmdName || (c.alias && c.alias.includes(cmdName)));
             if (command) {
