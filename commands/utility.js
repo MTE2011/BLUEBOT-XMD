@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, extractUrlsFromString, getJson, Baileys, talkNote, prefix, wtype, config, ss } = require("../src/core/kord_adapter")
+const { bluebot, extractUrlsFromString, getJson, Baileys, talkNote, prefix, wtype, config, ss } = require("../src/core/bluebot_adapter")
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit")

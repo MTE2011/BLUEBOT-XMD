@@ -16,7 +16,7 @@ const { bluebot,
   ytaudio,
   ytvideo,
   prefix,
-  searchYahoo } = require("../src/core/kord_adapter")
+  searchYahoo } = require("../src/core/bluebot_adapter")
 const gis = require('g-i-s')
 const { promisify } = require('util')
 const { v4: uuidv4 } = require('uuid')
@@ -27,7 +27,7 @@ const crypto = require('crypto')
 const yts = require("yt-search")
 const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
-BLUEBOT(
+bluebot(
 {
         cmd: "websearch|search",
         desc: "search the web based on given query",

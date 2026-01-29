@@ -3,7 +3,7 @@
  * Updates the bot from the official repository
  */
 
-const { bluebot, config } = require("../src/core/kord_adapter");
+const { bluebot, config } = require("../src/core/bluebot_adapter");
 const { exec } = require("child_process");
 const { promisify } = require("util");
 const execAsync = promisify(exec);

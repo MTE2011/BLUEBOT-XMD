@@ -18,7 +18,7 @@ const { bluebot,
  storeData,
  prefix,
  commands
-} = require("../src/core/kord_adapter")
+} = require("../src/core/bluebot_adapter")
 const axios = require('axios') 
 
 bluebot({

@@ -8,7 +8,7 @@
  */
  
  
- const { bluebot, wtype, isAdmin, isadminn, saveFilter, listFilters, removeFilter, prefix, getData, storeData, isBotAdmin} = require("../src/core/kord_adapter")
+ const { bluebot, wtype, isAdmin, isadminn, saveFilter, listFilters, removeFilter, prefix, getData, storeData, isBotAdmin} = require("../src/core/bluebot_adapter")
 
 bluebot({
   cmd: "delete|del|dlt",

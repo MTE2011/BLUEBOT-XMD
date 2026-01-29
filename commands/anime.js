@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, extractUrlsFromString, fetchWaifu, getJson, prefix, wtype, ss } = require("../src/core/kord_adapter")
+const { bluebot, extractUrlsFromString, fetchWaifu, getJson, prefix, wtype, ss } = require("../src/core/bluebot_adapter")
 const fs = require("fs");
 const path = require("path");
 const fetch = require("node-fetch")

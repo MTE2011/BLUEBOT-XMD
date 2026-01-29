@@ -8,7 +8,7 @@
  */
  
  
-const { bluebot, isAdmin, prefix, TicTacToe, WCG, wtype } = require("../src/core/kord_adapter")
+const { bluebot, isAdmin, prefix, TicTacToe, WCG, wtype } = require("../src/core/bluebot_adapter")
 
 bluebot({
   cmd: "delttt",

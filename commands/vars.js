@@ -8,7 +8,7 @@
  */
 
 const { bluebot, wtype, updateConfig, prefix, updateEnv, updateEnvSudo, addEnvSudo, removeEnvSudo, replaceEnvSudo, getEnvValue, envExists, listEnvKeys, toBoolean, getPlatformInfo, setVar, updateVar, delVar, getVars, config, myMods, getAdmins 
-  } = require("../src/core/kord_adapter")
+  } = require("../src/core/bluebot_adapter")
   const fs = require("fs")
   
   

@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, installPlugin, removePlugin, listPlugins } = require("../src/core/kord_adapter")
+const { bluebot, installPlugin, removePlugin, listPlugins } = require("../src/core/bluebot_adapter")
 
 bluebot({
   cmd: "plugin|install",

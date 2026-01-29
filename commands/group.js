@@ -24,7 +24,7 @@ const {
   getMeta,
   isUrl,
   config
-} = require("../src/core/kord_adapter")
+} = require("../src/core/bluebot_adapter")
 const { warn } = require("../database/db_manager")
 const pre = prefix 
 // let activeTimers = new Map()

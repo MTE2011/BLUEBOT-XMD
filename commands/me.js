@@ -18,11 +18,11 @@ const { bluebot,
   config,
   updateBot,
   Baileys,
-} = require("../src/core/kord_adapter")
+} = require("../src/core/bluebot_adapter")
 const { exec } = require("child_process")
 const os = require("os")
 const pre = prefix
-const core = require("../src/core/kord_adapter")
+const core = require("../src/core/bluebot_adapter")
 const path = require('path')
 const fs = require('fs')
 const { warn } = require("../database/db_manager")

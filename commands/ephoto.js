@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, config, prefix, wtype, textMaker } = require("../src/core/kord_adapter");
+const { bluebot, config, prefix, wtype, textMaker } = require("../src/core/bluebot_adapter");
 const fetch = require('node-fetch');
 
 const createCmd = (name, effectUrl, emoji, description, options = {}) => {

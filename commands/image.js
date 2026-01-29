@@ -15,7 +15,7 @@ const {
    upscaleImage,
    config,
    Baileys
-} = require("../src/core/kord_adapter")
+} = require("../src/core/bluebot_adapter")
 
 
 const getImageUrl = async (m) => {

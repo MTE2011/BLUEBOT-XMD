@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const {BLUEBOT, webp2png, webp2mp4, elevenlabs, rand, getBuffer, toAudio, config, processAudio, extractUrlsFromString, toPTT, isMediaURL, wtype} = require("../src/core/kord_adapter")
+const {bluebot, webp2png, webp2mp4, elevenlabs, rand, getBuffer, toAudio, config, processAudio, extractUrlsFromString, toPTT, isMediaURL, wtype} = require("../src/core/bluebot_adapter")
 
 const { Sticker, StickerTypes } = require("wa-sticker-formatter")
 const fs = require('fs')

@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, wtype, prefix, sleep, extractUrlsFromString, fb, ytaudio, config, ytvideo, xdl, tt, insta, mediaFire, rand, getBuffer } = require("../src/core/kord_adapter")
+const { bluebot, wtype, prefix, sleep, extractUrlsFromString, fb, ytaudio, config, ytvideo, xdl, tt, insta, mediaFire, rand, getBuffer } = require("../src/core/bluebot_adapter")
 const yts = require("yt-search")
 const { Sticker, StickerTypes } = require("wa-sticker-formatter");
 

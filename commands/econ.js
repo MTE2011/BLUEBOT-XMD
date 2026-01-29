@@ -7,7 +7,7 @@
  * -------------------------------------------------------------------------------
  */
 
-const { bluebot, prefix, wtype, config, getData, storeData } = require("../src/core/kord_adapter")
+const { bluebot, prefix, wtype, config, getData, storeData } = require("../src/core/bluebot_adapter")
 const fs = require("fs")
 const path = require("path")
 const edb = require("../core/edb")

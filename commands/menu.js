@@ -1,4 +1,4 @@
-const { bluebot, commands, config } = require("../src/core/kord_adapter");
+const { bluebot, commands, config } = require("../src/core/bluebot_adapter");
 
 bluebot({
     cmd: "menu",
