@@ -1,5 +1,5 @@
 /* 
- * Copyright © 2025 Kenny
+ * Copyright © 2026 mudau_t
  * This file is part of BLUEBOT and is licensed under the GNU GPLv3.
  * And I hope you know what you're doing here.
  * You may not use this file except in compliance with the License.
@@ -467,34 +467,41 @@ if (text.trim().toLowerCase() === 'admins') {
   }
 })
 
-
 bluebot({
-cmd: "getsudo|allsudo",
-  desc: "get all sudos",
-  fromMe: wtype,
-  type: "config",
+    cmd: "guards",
+    desc: "Get all guards",
+    fromMe: wtype,
+    type: "config",
 }, async (m, text) => {
-  try {
-    var sudo = (config().SUDO || "")
-    .split(",")
-    .map(n => n.trim())
-    .filter(n => n)
-    if (sudo.length == 0) return await m.send("_Sudo list is empty_")
-    var msg = "「 SUDO LIST 」\n"
-    var mj = []
-    for (var s of sudo) {
-    var jid = s.trim() + '@s.whatsapp.net'
-    msg += `❑ @${s}\n`
-    mj.push(jid)
+    try {
+        // Fetch guards from config
+        const guards = (config().GUARDS || "")
+            .split(",")
+            .map(n => n.trim())
+            .filter(n => n);
+
+        if (!guards.length) 
+            return await m.send("_Guard list is empty!_");
+
+        // Build the message
+        let msg = "╭───❖ 🛡️ Guards List ❖───╮\n│\n";
+        const mentions = [];
+
+        for (const g of guards) {
+            const jid = g + '@s.whatsapp.net';
+            msg += `│ ➤ @${g}\n`;
+            mentions.push(jid);
+        }
+
+        msg += "│\n╰────────────────────────╯";
+
+        // Send message with mentions
+        return await m.send(msg, { mentions });
+    } catch (e) {
+        console.log("cmd error", e);
+        return await m.sendErr(e);
     }
-    var fmsg = `\`\`\`${msg}\`\`\``
-    return await m.send(fmsg, {mentions: mj
-})
-  } catch (e) {
-    console.log("cmd error", e)
-    return await m.sendErr(e)
-  }
-})
+});
 
 bluebot({
   cmd: "setmod|addmod",
@@ -600,33 +607,45 @@ if (text.trim().toLowerCase() === 'admins') {
 })
 
 bluebot({
-cmd: "getmods|getmod|allmods",
-  desc: "get all mods",
-  fromMe: wtype,
-  type: "config",
+    cmd: "mods",
+    desc: "Get all moderators",
+    fromMe: wtype,
+    type: "config",
 }, async (m, text) => {
-  try {
-    var modList = (config().MODS || "")
-    .split(",")
-    .map(n => n.trim())
-    .filter(n => n)
-    
-    if (modList.length == 0)
-    return await m.send("_Mod list is empty_")
-    var msg = "「 MOD LIST 」\n"
-    var mentionJids = []
-    for (var u of modList) {
-    msg += `❑ @${u}\n`
-    mentionJids.push(u + '@s.whatsapp.net')
+    try {
+        // Fetch mods from config
+        const mods = (config().MODS || "")
+            .split(",")
+            .map(n => n.trim())
+            .filter(n => n);
+
+        if (!mods.length) 
+            return await m.send("_Mod list is empty!_");
+
+        // Build the message in a boxed style
+        let msg = "╭───❖ 🛡️ Moderator List ❖───╮\n│\n";
+        const mentions = [];
+
+        for (const mod of mods) {
+            const jid = mod + '@s.whatsapp.net';
+            msg += `│ ➤ @${mod}\n`;
+            mentions.push(jid);
+        }
+
+        msg += "│\n╰────────────────────────╯\n\n";
+        msg += "> ⚠️ Warning: Using mods commands without real help may lead to a ban from using our bots.";
+
+        // Send message with image and mentions
+        return await m.sendMessage(m.chat, {
+            image: { url: config().CMDS_IMAGE }, // image from config.js
+            caption: msg,
+            mentions
+        });
+    } catch (e) {
+        console.log("cmd error", e);
+        return await m.sendErr(e);
     }
-    var fmsg = `\`\`\`${msg}\`\`\``
-    return await m.send(fmsg, {
-    mentions: mentionJids })
-  } catch (e) {
-    console.log("cmd error", e)
-    return await m.sendErr(e)
-  }
-})
+});
 
 
 bluebot({
@@ -694,7 +713,7 @@ bluebot({
   type: "config",
 }, async (m, text) => {
   try {
-    if (!text) return await m.send("_provide an emoji_\n_example: savecmd 🤍")
+    if (!text) return await m.send("*_provide an emoji_\n_example: savecmd 🙄_*")
     await updateAllConfig("SAVE_CMD", text, m)
   } catch (e) {
     console.log("cmd error", e)
@@ -709,7 +728,7 @@ bluebot({
   type: "config",
 }, async (m, text) => {
   try {
-    if (!text) return await m.send("_provide an emoji_\n_example: vvcmd 🤍")
+    if (!text) return await m.send("*_provide an emoji_\n_example: vvcmd ☺️_*")
     await updateAllConfig("VV_CMD", text, m)
   } catch (e) {
     console.log("cmd error", e)
