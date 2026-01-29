@@ -5,15 +5,18 @@ const crypto = require("crypto");
 
 // ANTI-EDIT PROTECTION
 // This code ensures that any modification to this file will shut down the bot.
-const currentFileContent = fs.readFileSync(__filename, "utf8");
-// Hardcoded checksum of the "pure" version of this file (calculated after writing)
-const PURE_CHECKSUM = "da3652b36728a06e830c3d56f36a8e08ac33817fc692f4ae2605258a8a60590b"; 
+// Hardcoded checksum of the "pure" version of this file
+const PURE_CHECKSUM = "682a96eb8d08e160b88ac6320f9742e8866503a16d0a2215607ec69c2be1fcba"; 
 
 function verifyIntegrity() {
-    const hash = crypto.createHash("sha256").update(fs.readFileSync(__filename, "utf8")).digest("hex");
-    // During first run, we'll log the hash so we can lock it
+    // We normalize the file content by removing all whitespace and line endings 
+    // to prevent the check from failing due to different hosting environments (LF vs CRLF)
+    const content = fs.readFileSync(__filename, "utf8");
+    const normalizedContent = content.replace(/\s+/g, "");
+    const hash = crypto.createHash("sha256").update(normalizedContent).digest("hex");
+    
     if (PURE_CHECKSUM === "ANTI_EDIT_STUB") {
-        console.log(`[INTEGRITY] New file hash: ${hash}`);
+        console.log(`[INTEGRITY] New normalized hash: ${hash}`);
     } else if (hash !== PURE_CHECKSUM) {
         console.error("🛑 [SECURITY] UNAUTHORIZED EDIT DETECTED IN blue.js!");
         console.error("🛑 The bot will now shut down to prevent instability.");
